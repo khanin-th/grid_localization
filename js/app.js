@@ -58,22 +58,29 @@ function draw_line(pointA, pointB, ctx) {
   ctx.stroke();
 }
 
-// calculate intersections of 2 lines defined by end points 
+// calculate intersections of 2 lines defined by end points
 function get_intersection(point1, point2, point3, point4) {
-    // point1 and point2 are Point() object with .x and .y value which defines end points of Line1
-    // point3 and point4 are Point() object with .x and .y value which defines end points of Line2
+  // point1 and point2 are Point() object with .x and .y value which defines end points of Line1
+  // point3 and point4 are Point() object with .x and .y value which defines end points of Line2
 
-    // using determinant calculation https://en.wikipedia.org/wiki/Line–line_intersection
-    // if can fine a more efficient way to compute det in JS, it could improve this function
-    const deno = ((point1.x-point2.x)*(point3.y-point4.y)-(point1.y-point2.y)*(point3.x-point4.x));
+  // using determinant calculation https://en.wikipedia.org/wiki/Line–line_intersection
+  // if can fine a more efficient way to compute det in JS, it could improve this function
+  const deno =
+    (point1.x - point2.x) * (point3.y - point4.y) -
+    (point1.y - point2.y) * (point3.x - point4.x);
 
-    const Px = ((point1.x*point2.y-point1.y*point2.x)*(point3.x-point4.x)-(point1.x-point2.x)*(point3.x*point4.y-point3.y*point4.x))/deno;
+  const Px =
+    ((point1.x * point2.y - point1.y * point2.x) * (point3.x - point4.x) -
+      (point1.x - point2.x) * (point3.x * point4.y - point3.y * point4.x)) /
+    deno;
 
-    const Py = ((point1.x*point2.y-point1.y*point2.x)*(point3.y-point4.y)-(point1.y-point2.y)*(point3.x*point4.y-point3.y*point4.x))/deno;
+  const Py =
+    ((point1.x * point2.y - point1.y * point2.x) * (point3.y - point4.y) -
+      (point1.y - point2.y) * (point3.x * point4.y - point3.y * point4.x)) /
+    deno;
 
-    var intersection = new Point(Px, Py);
-    return intersection;
-
+  var intersection = new Point(Px, Py);
+  return intersection;
 }
 
 function draw() {
@@ -95,18 +102,18 @@ function draw() {
   draw_line(POINT4, POINT3, ctx);
   draw_line(POINT3, POINT1, ctx);
 
-//   // draw horizontal grid
-//   for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
-//       draw_line(SIDE12[i], SIDE34[i], ctx)
-//   }
+  // draw horizontal grid
+  for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
+    draw_line(SIDE12[i], SIDE34[i], ctx);
+  }
 
-//   // draw vertical grid
-//   for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++) {
-//       draw_line(SIDE13[i], SIDE24[i], ctx)
-//   }
-  
-    // getting all internal intersections
-    /* Intersections will be generated as 1D array and by row starting from top left as index 0th as shown.
+  // draw vertical grid
+  for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++) {
+    draw_line(SIDE13[i], SIDE24[i], ctx);
+  }
+
+  // getting all internal intersections
+  /* Intersections will be generated as 1D array and by row starting from top left as index 0th as shown.
 
         pt1        pt3 
          ------------
@@ -119,34 +126,43 @@ function draw() {
         pt2        pt4  
 
         */
-    var INTERSECTIONS = new Array()
-    for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
-        for (var j = 0; j < NUMBER_OF_VERTICAL_GRID; j++) {
-            INTERSECTIONS.push(get_intersection(SIDE12[i], SIDE34[i], SIDE24[j], SIDE13[j]));
-        }
+  var INTERSECTIONS = new Array();
+  for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
+    for (var j = 0; j < NUMBER_OF_VERTICAL_GRID; j++) {
+      INTERSECTIONS.push(
+        get_intersection(SIDE12[i], SIDE34[i], SIDE24[j], SIDE13[j])
+      );
     }
-    console.log(INTERSECTIONS);
+  }
 
-  // plot the points in the horizontal gird
-  function draw_points(pointA, pointB, ctx) {
+  // creating a function to draw points on the plane
+  function drawPoints(point, ctx, color) {
     ctx.beginPath();
-    ctx.fillStyle = "blue";
-    ctx.fillRect(pointA.x, pointA.y, 10, 10, 2 * Math.PI);
-    ctx.fillRect(pointB.x, pointB.y, 10, 10, 2 * Math.PI);
+    ctx.fillStyle = color;
+    ctx.fillRect(point.x, point.y, 10, 10, 2 * Math.PI);
     ctx.fill();
   }
 
-  draw_points(POINT1, POINT2, ctx);
-  draw_points(POINT3, POINT1, ctx);
-  draw_points(POINT2, POINT4, ctx);
-  draw_points(POINT4, POINT3, ctx);
-
-  for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++){
-    draw_points(SIDE12[i], SIDE34[i], ctx);
+  // array that stores all the points 
+  var allPoints = new Array();
+  // pushing corners
+  allPoints.push(POINT1, POINT2, POINT3, POINT4);
+  // pushing sides
+  let allSides = [SIDE12, SIDE13, SIDE24, SIDE34];
+  for (var i = 0; i < allSides.length; i++) {
+    for (var j = 0; j < allSides[i].length; j++) {
+      allPoints.push(allSides[i][j]);
+    }
   }
-  for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++) {
-    draw_points(SIDE13[i], SIDE24[i], ctx);
-}
+  // pushing intersections
+  for (var i = 0; i < INTERSECTIONS.length; i++) {
+    allPoints.push(INTERSECTIONS[i]);
+  }
+  // drawing points
+  for (var i = 0; i < allPoints.length; i++) {
+    drawPoints(allPoints[i], ctx, "blue");
+  }
+  // console.log(allPoints);
 }
 
 draw();
