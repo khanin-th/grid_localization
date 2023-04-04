@@ -18,9 +18,9 @@ Point = function (x, y) {
   this.x = x;
   this.y = y;
 };
-var POINT1 = new Point(0, 0);
-var POINT2 = new Point(0, 400);
-var POINT3 = new Point(400, 0);
+var POINT1 = new Point(0, 50);
+var POINT2 = new Point(0, 500);
+var POINT3 = new Point(400, 50);
 var POINT4 = new Point(400, 400);
 
 var NUMBER_OF_HORIZONTAL_GRID = 2;
@@ -83,6 +83,18 @@ function get_intersection(point1, point2, point3, point4) {
   return intersection;
 }
 
+// creating a function to draw points on the plane
+function drawPoints(point, ctx, color, textId, textColor) {
+  ctx.beginPath();
+  ctx.fillStyle = color;
+  ctx.fillRect(point.x, point.y, 10, 10, 2 * Math.PI);
+  ctx.fill();
+
+  ctx.font = "Italic 16px Arial";
+  ctx.fillStyle = textColor;
+  ctx.fillText(textId, point.x, point.y);
+}
+
 function draw() {
   const canvas = document.getElementById("rectangleCanvas");
 
@@ -93,7 +105,7 @@ function draw() {
 
   // set line stroke and line width
   ctx.strokeStyle = "red";
-  ctx.lineWidth = 5;
+  ctx.lineWidth = 1;
 
   // draw a rectangle based on 4 points
   // note that 4 points should already be ordered
@@ -135,15 +147,7 @@ function draw() {
     }
   }
 
-  // creating a function to draw points on the plane
-  function drawPoints(point, ctx, color) {
-    ctx.beginPath();
-    ctx.fillStyle = color;
-    ctx.fillRect(point.x, point.y, 10, 10, 2 * Math.PI);
-    ctx.fill();
-  }
-
-  // array that stores all the points 
+  // array that stores all the points
   var allPoints = new Array();
   // pushing corners
   allPoints.push(POINT1, POINT2, POINT3, POINT4);
@@ -158,9 +162,15 @@ function draw() {
   for (var i = 0; i < INTERSECTIONS.length; i++) {
     allPoints.push(INTERSECTIONS[i]);
   }
+
+  // sorting the allPoints array
+  allPoints.sort(function(a,b) { return a.x-b.x })
+  allPoints.sort(function(a,b) { return b.y-a.y })
+
+  console.log(allPoints);
   // drawing points
   for (var i = 0; i < allPoints.length; i++) {
-    drawPoints(allPoints[i], ctx, "blue");
+    drawPoints(allPoints[i], ctx, "blue", i, "green");
   }
   // console.log(allPoints);
 }
