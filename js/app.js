@@ -5,7 +5,7 @@
 Point = function(x, y) {
     this.x = x;
     this.y = y;
-  }
+  } 
 var POINT1 = new Point(0, 0); 
 var POINT2 = new Point(0, 400);
 var POINT3 = new Point(300, 0); 
