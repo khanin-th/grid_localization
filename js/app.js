@@ -115,6 +115,19 @@ function draw() {
     }
 
     // getting all internal intersections
+    /* Intersections will be generated as 1D array and by row starting from top left as index 0th as shown.
+
+        pt1        pt3 
+         ------------
+        | 0|  1| 2...|
+         ------------
+        | x|x+1|  ...|
+         ------------
+        |  |   |  ...|
+         ------------
+        pt2        pt4  
+
+        */
     var INTERSECTIONS = new Array()
     for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
         for (var j = 0; j < NUMBER_OF_VERTICAL_GRID; j++) {
