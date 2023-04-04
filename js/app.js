@@ -1,5 +1,17 @@
 // https://www.javascripttutorial.net/web-apis/javascript-draw-line/
 
+/* Point assignment must follow this order 
+
+pt1        pt3 
+ -----------
+|           |
+|           |
+|           |
+ -----------
+pt2        pt4  
+
+*/
+
 // define lines for outer edges of the rectangle here
 // later will get this line from 4 mmarkers
 Point = function (x, y) {
@@ -46,6 +58,24 @@ function draw_line(pointA, pointB, ctx) {
   ctx.stroke();
 }
 
+// calculate intersections of 2 lines defined by end points 
+function get_intersection(point1, point2, point3, point4) {
+    // point1 and point2 are Point() object with .x and .y value which defines end points of Line1
+    // point3 and point4 are Point() object with .x and .y value which defines end points of Line2
+
+    // using determinant calculation https://en.wikipedia.org/wiki/Line–line_intersection
+    // if can fine a more efficient way to compute det in JS, it could improve this function
+    const deno = ((point1.x-point2.x)*(point3.y-point4.y)-(point1.y-point2.y)*(point3.x-point4.x));
+
+    const Px = ((point1.x*point2.y-point1.y*point2.x)*(point3.x-point4.x)-(point1.x-point2.x)*(point3.x*point4.y-point3.y*point4.x))/deno;
+
+    const Py = ((point1.x*point2.y-point1.y*point2.x)*(point3.y-point4.y)-(point1.y-point2.y)*(point3.x*point4.y-point3.y*point4.x))/deno;
+
+    var intersection = new Point(Px, Py);
+    return intersection;
+
+}
+
 function draw() {
   const canvas = document.getElementById("rectangleCanvas");
 
@@ -74,6 +104,28 @@ function draw() {
 //   for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++) {
 //       draw_line(SIDE13[i], SIDE24[i], ctx)
 //   }
+  
+    // getting all internal intersections
+    /* Intersections will be generated as 1D array and by row starting from top left as index 0th as shown.
+
+        pt1        pt3 
+         ------------
+        | 0|  1| 2...|
+         ------------
+        | x|x+1|  ...|
+         ------------
+        |  |   |  ...|
+         ------------
+        pt2        pt4  
+
+        */
+    var INTERSECTIONS = new Array()
+    for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
+        for (var j = 0; j < NUMBER_OF_VERTICAL_GRID; j++) {
+            INTERSECTIONS.push(get_intersection(SIDE12[i], SIDE34[i], SIDE24[j], SIDE13[j]));
+        }
+    }
+    console.log(INTERSECTIONS);
 
   // plot the points in the horizontal gird
   function draw_points(pointA, pointB, ctx) {
