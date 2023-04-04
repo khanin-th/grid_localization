@@ -23,8 +23,8 @@ var POINT2 = new Point(0, 500);
 var POINT3 = new Point(400, 50);
 var POINT4 = new Point(400, 400);
 
-var NUMBER_OF_HORIZONTAL_GRID = 2;
-var NUMBER_OF_VERTICAL_GRID = 2;
+var NUMBER_OF_HORIZONTAL_GRID = 8;
+var NUMBER_OF_VERTICAL_GRID = 8;
 
 function get_points_between_2_points(pointA, pointB, number_of_points) {
   // pointA and pointB are Point() object with .x and .y value
@@ -114,15 +114,15 @@ function draw() {
   draw_line(POINT4, POINT3, ctx);
   draw_line(POINT3, POINT1, ctx);
 
-  // draw horizontal grid
-  for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
-    draw_line(SIDE12[i], SIDE34[i], ctx);
-  }
+//   // draw horizontal grid
+//   for (var i = 0; i < NUMBER_OF_HORIZONTAL_GRID; i++) {
+//     draw_line(SIDE12[i], SIDE34[i], ctx);
+//   }
 
-  // draw vertical grid
-  for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++) {
-    draw_line(SIDE13[i], SIDE24[i], ctx);
-  }
+//   // draw vertical grid
+//   for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++) {
+//     draw_line(SIDE13[i], SIDE24[i], ctx);
+//   }
 
   // getting all internal intersections
   /* Intersections will be generated as 1D array and by row starting from top left as index 0th as shown.
@@ -165,7 +165,7 @@ function draw() {
 
   // sorting the allPoints array
   allPoints.sort(function(a,b) { return a.x-b.x })
-  allPoints.sort(function(a,b) { return b.y-a.y })
+  allPoints.sort(function(a,b) { return a.y-b.y })
 
   console.log(allPoints);
   // drawing points
@@ -173,6 +173,10 @@ function draw() {
     drawPoints(allPoints[i], ctx, "blue", i, "green");
   }
   // console.log(allPoints);
+
+  // highlighting a particular point
+  point = 17
+  drawPoints(allPoints[point], ctx, "red", point, "red");
 }
 
 draw();
