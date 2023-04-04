@@ -93,7 +93,7 @@ function draw() {
     draw_points(SIDE12[i], SIDE34[i], ctx);
   }
   for (var i = 0; i < NUMBER_OF_VERTICAL_GRID; i++) {
-    draw_points(SIDE13[i], SIDE24[i], ctx)
+    draw_points(SIDE13[i], SIDE24[i], ctx);
 }
 }
 
